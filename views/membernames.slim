@@ -1,0 +1,14 @@
+h2 Member names
+
+form action="/membernames" method="POST"
+ 	input type="text" name="newname[]"
+ 	input.button type="submit" value="New name >>"
+
+- @memberlist.each do |name|
+p= name[0]
+end
+
+<!--ul
+	- @memberlist.each do |name|
+	li= name[0]
+	end-->
