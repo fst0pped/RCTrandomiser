@@ -3,6 +3,7 @@ require 'csv'
 require 'slim'
 
 get '/' do
+	$memberlist = nil
 	slim :index
 end
 
@@ -11,7 +12,12 @@ get '/pairings' do
 end
 
 get '/membernames' do
+	if $membernames
 		slim :membernames
+	else
+		$error = "You have not submitted any names yet"
+		slim :index
+	end
 end
 
 post '/' do
