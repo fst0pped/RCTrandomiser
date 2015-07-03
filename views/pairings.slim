@@ -2,3 +2,8 @@ p
 	a href=:membernames Manage member list
 
 h2 Pairings list
+
+ul
+	- $pairings.each do |names|
+		li= names[0]
+	end

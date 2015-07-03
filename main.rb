@@ -2,6 +2,18 @@ require 'sinatra'
 require 'csv'
 require 'slim'
 
+def randomise(names)
+	pairings = Array.new
+	while names.length > 1
+		a = names.sample
+		names - a
+		b = names.sample
+		names - b
+		pairings << [a,b]
+	end	
+	return pairings
+end
+
 get '/' do
 	$memberlist = nil
 	slim :index
@@ -12,7 +24,7 @@ get '/pairings' do
 end
 
 get '/membernames' do
-	if $membernames
+	if $memberlist
 		slim :membernames
 	else
 		$error = "You have not submitted any names yet"
@@ -26,7 +38,8 @@ post '/' do
 		if params[:exclusionlist]
 			$exclusionlist = CSV.read(params[:exclusionlist][:tempfile])
 		end
-	slim :pairings
+		$pairings = randomise($memberlist)
+		slim :pairings
 	else slim :index
 	end
 end
