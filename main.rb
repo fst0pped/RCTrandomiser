@@ -6,9 +6,9 @@ def randomise(names)
 	pairings = Array.new
 	while names.length > 1
 		a = names.sample
-		names - a
+		names = names - [a]
 		b = names.sample
-		names - b
+		names = names - [b]
 		pairings << [a,b]
 	end	
 	return pairings
