@@ -10,7 +10,12 @@ def randomise(names)
 		b = names.sample
 		names = names - [b]
 		pairings << [a,b]
-	end	
+	end
+	if names.length == 1
+		$spare = names
+	else
+		$spare = nil
+	end
 	return pairings
 end
 
@@ -32,16 +37,25 @@ get '/membernames' do
 	end
 end
 
+get '/exclusions' do
+	slim :exclusions
+end
+
 post '/' do
 	if params[:memberlist]
 		$memberlist = CSV.read(params[:memberlist][:tempfile])
 		if params[:exclusionlist]
 			$exclusionlist = CSV.read(params[:exclusionlist][:tempfile])
 		end
-		$pairings = randomise($memberlist)
+#		$pairings = randomise($memberlist)
 		slim :pairings
 	else slim :index
 	end
+end
+
+post '/pairings' do
+	$pairings = randomise($memberlist)
+	slim :pairings
 end
 
 post '/membernames' do
@@ -51,3 +65,9 @@ post '/membernames' do
 		slim :membernames
 end
 
+post '/exclusions' do
+	if params[:exclusionA] && params[:exclusionB]
+		$exclusionlist << [params[:exclusionA],params[:exclusionB]]
+	end
+	slim :exclusions
+end

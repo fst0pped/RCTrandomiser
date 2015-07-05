@@ -1,0 +1,16 @@
+p
+	a href=:pairings Back to pairings list
+
+h2 Excluded pairs
+
+form action="/exclusions" method="POST"
+ 	input type="text" name="exclusionA[]"
+ 	input type="text" name="exclusionB[]"
+ 	input.button type="submit" value="<< New pair"
+
+ul
+	- if $exclusionlist
+		- $exclusionlist.each do |pair|
+			li= "#{pair[0]} and #{pair[1]}"
+		end
+	end
