@@ -4,13 +4,24 @@ p
 h2 Excluded pairs
 
 form action="/exclusions" method="POST"
- 	input type="text" name="exclusionA[]"
- 	input type="text" name="exclusionB[]"
+ 	- if @errorA or @errorB
+		input type="text" name="exclusionA" value="#{params[:exclusionA]}"
+		input type="text" name="exclusionB" value="#{params[:exclusionB]}"
+	- else
+		input type="text" name="exclusionA"
+		input type="text" name="exclusionB"
+		
  	input.button type="submit" value="<< New pair"
+
+- if @errorA
+	p #{@errorA}
+
+- if @errorB
+	p #{@errorB}
 
 ul
 	- if $exclusionlist
 		- $exclusionlist.each do |pair|
 			li= "#{pair[0]} and #{pair[1]}"
-		end
-	end
+	- else
+		p No excluded pairs have been added
