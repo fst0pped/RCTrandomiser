@@ -3,24 +3,32 @@ require 'csv'
 require 'slim'
 
 def excludeprevious(name,members,excludes)
-	notexcluded = members.delete_if { |x| excludes.include?(name.last) or excludes.include?(name.fist) }
+	toexclude = []
+	excludes.each do |item|
+		if item[0] == name
+			toexclude << item[1]
+		elsif item[1] == name
+			toexclude << item[0]
+		end
+	end
+	notexcluded = members.delete_if { |x| toexclude.include?(x) }
 	return notexcluded
 end
 
-def randomise(names, excludes)
-	pairings = Array.new
-	while names.length > 1
-		a = names.sample.slice!(0)
-#		names = names - [a]
-		notexcluded = excludeprevious(a,names,excludes)
+def randomise(members, excludes)
+	pairings = []
+	while members.length > 1
+		a = members.sample
+		members = members - [a]
+		notexcluded = excludeprevious(a,members,excludes)
 		b = notexcluded.sample
-		names = names - [b]
+		members = members - [b]
 		
 		pairings << [a,b]
 	end
 	# Using a global for this is terrible practice and I am a bad person. But it works for now.
-	if names.length == 1
-		$spare = names
+	if members.length == 1
+		$spare = members
 	else
 		$spare = nil
 	end
