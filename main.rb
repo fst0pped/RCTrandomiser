@@ -2,6 +2,10 @@ require 'sinatra'
 require 'csv'
 require 'slim'
 
+#-----------------------------------------------------------------------
+#Functions
+#-----------------------------------------------------------------------
+
 def randomise(memberlist, exclusionlist)
 	pairings = []
 	while memberlist.length > 1 # in case list length is odd
@@ -41,6 +45,14 @@ def checkforname(list,name)
 	list.include? [name]
 end
 
+#-----------------------------------------------------------------------
+#Controllers
+#-----------------------------------------------------------------------
+
+#
+#Get
+#
+
 get '/' do
 	$memberlist, $exclusionlist, $pairings, $spare = nil
 	slim :index
@@ -62,6 +74,14 @@ end
 get '/exclusions' do
 	slim :exclusions
 end
+
+get '/download' do
+	slim :download
+end
+
+#
+#Post
+#
 
 post '/' do
 	if params[:memberlist]
