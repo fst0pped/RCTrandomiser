@@ -2,56 +2,40 @@ require 'sinatra'
 require 'csv'
 require 'slim'
 
-def excludeprevious(name,members,excludes)
-	toexclude = []
-	excludes.each do |item|
-		if item[0] == name
-			toexclude << item[1]
-		elsif item[1] == name
-			toexclude << item[0]
-		end
-	end
-	notexcluded = members.delete_if { |x| toexclude.include?(x) }
-	return notexcluded
-end
-
-def randomise(members, excludes)
+def randomise(memberlist, exclusionlist)
 	pairings = []
-	while members.length > 1
-		a = members.sample
-		members = members - [a]
-		notexcluded = excludeprevious(a,members,excludes)
+	while memberlist.length > 1 # in case list length is odd
+		# extract name from memberlist
+		a = memberlist.sample
+		memberlist = memberlist - [a]
+		notexcluded = exclude(a,memberlist,exclusionlist)
+		# set name from notexcluded, but remove from memberlist so it can't be reused
 		b = notexcluded.sample
-		members = members - [b]
-		
+		memberlist = memberlist - [b]
 		pairings << [a,b]
 	end
 	# Using a global for this is terrible practice and I am a bad person. But it works for now.
-	if members.length == 1
-		$spare = members
+	if memberlist.length == 1
+		$spare = memberlist
 	else
 		$spare = nil
 	end
 	return pairings
 end
 
-#def randomise(names)
-#	pairings = Array.new
-#	while names.length > 1
-#		a = names.sample
-#		names = names - [a]
-#		b = names.sample
-#		names = names - [b]
-#		pairings << [a,b]
-#	end
-#	# Using a global for this is terrible practice and I am a bad person. But it works for now.
-#	if names.length == 1
-#		$spare = names
-#	else
-#		$spare = nil
-#	end
-#	return pairings
-#end
+
+def exclude(name,memberlist,exclusionlist)
+	toexclude = []
+	exclusionlist.each do |item| 
+		if [item[0]] == name
+			toexclude << item[1]
+		elsif [item[1]] == name
+			toexclude << item[0]
+		end
+	end
+	# remove names from the members array if they match any names on the toexclude array
+	return memberlist.reject { |x| [toexclude].include?(x) }
+end
 
 def checkforname(list,name)
 	list.include? [name]
@@ -93,6 +77,7 @@ end
 post '/pairings' do
 	if $memberlist
 		$pairings = randomise($memberlist,$exclusionlist)
+		p $pairings
 		end
 	slim :pairings
 end
