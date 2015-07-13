@@ -8,8 +8,8 @@ require 'slim'
 
 class MemberList
   attr_accessor :memberlist
-  def initialize
-    @memberlist = CSV.read(params[:memberlist][:tempfile])
+  def initialize(memberlist)
+    @memberlist = memberlist
   end
 end
 
@@ -102,14 +102,16 @@ end
 #
 
 post '/' do
-  if params[:memberlist]
-    memberlist = MemberList.new
-    if params[:exclusionlist]
-      exclusionlist = ExclusionList.new
-    end
+#  if params[:memberlist]
+    memberlist = CSV.read(params[:memberlist][:tempfile])
+    MemberList.new(memberlist)
+    p MemberList.memberlist
+#    if params[:exclusionlist]
+#      ExclusionList.new
+#    end
     slim :pairings
-  else slim :index
-  end
+#  else slim :index
+#  end
 end
 
 post '/pairings' do
