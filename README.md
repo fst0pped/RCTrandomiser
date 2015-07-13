@@ -2,6 +2,7 @@
 My first application, getting familiar with Ruby and Sinatra. The ultimate goal is to support running of Nesta random coffee trials in the workplace by allowing the user to input a list of names, have them randomised into pairings (with previous pairings excluded), and allowing the user to download the list.
 
 ###Features still to add
+- Replace nasty globals with classes and instance variables. Learning as I go.
 - Download .csv files of members/exclusions/pairings
 - Remove list items (all lists)
 - Disable/re-enable members without deleting (e.g. "I'm on holiday this week, can I skip this session?")
