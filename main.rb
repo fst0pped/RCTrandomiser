@@ -9,57 +9,71 @@ use Rack::Session::Pool
 #-----------------------------------------------------------------------
 
 class MemberList
-  attr_accessor :memberlist
-  def initialize(memberlist)
-    @memberlist = memberlist
+  attr_accessor :members
+  def initialize(list)
+    @members = list
   end
 end
 
 class ExclusionList
-  attr_accessor :exclusionlist
-  def initialize
-    @exclusionlist = CSV.read(params[:exclusionlist][:tempfile])
+  attr_accessor :exclusions
+  def initialize(list)
+    @exclusions = list
   end
+end
+
+class PairingsList
+  attr_accessor :pairings
+  attr_accessor :spare_member
+    def initialize(members,exclusions)
+      @pairings = randomise(members,exclusions)[0]
+    end
 end
 
 #-----------------------------------------------------------------------
 #Functions
 #-----------------------------------------------------------------------
 
-def randomise(memberlist, exclusionlist)
+def randomise(members, exclusions)
   pairings = []
-  while memberlist.length > 1 # in case list length is odd
-    # extract name from memberlist
-    a = memberlist.sample
-    memberlist = memberlist - [a]
-    notexcluded = exclude(a,memberlist,exclusionlist)
-    # set name from notexcluded, but remove from memberlist so it can't be reused
-    b = notexcluded.sample
-    memberlist = memberlist - [b]
+  while members.length > 1 # in case list length is odd
+    # extract name from members
+    a = members.sample
+    members = members - [a]
+    # if no exclusion list exists, skip over that logic
+    if exclusions
+      notexcluded = exclude(a,members,exclusions)
+      # set name from notexcluded, but remove from members so it can't be reused
+      b = notexcluded.sample
+    else
+      b = members.sample
+    end
+    members = members - [b]
     pairings << [a,b]
   end
   # Using a global for this is terrible practice and I am a bad person. But it works for now.
-  if memberlist.length == 1
-    $spare = memberlist
+  if members.length == 1
+    spare = members
   else
-    $spare = nil
+    spare = nil
   end
   return pairings
 end
 
 
-def exclude(name,memberlist,exclusionlist)
+def exclude(name,members,exclusions)
   toexclude = []
-  exclusionlist.each do |item| 
+  exclusions.each do |item| 
     if [item[0]] == name
-      toexclude << item[1]
+      toexclude << [item[1]]
     elsif [item[1]] == name
-      toexclude << item[0]
+      toexclude << [item[0]]
     end
   end
   # remove names from the members array if they match any names on the toexclude array
-  return memberlist.reject { |x| [toexclude].include?(x) }
+  return members.reject { |x| toexclude.include?(x) }
 end
+
 
 def checkforname(list,name)
   list.include? [name]
@@ -83,7 +97,7 @@ get '/pairings' do
 end
 
 get '/membernames' do
-  if $memberlist
+  if session[:members]
     slim :membernames
   else
     $error = "You have not submitted any names yet"
@@ -104,22 +118,20 @@ end
 #
 
 post '/' do
-#  if params[:memberlist]
-    memberlist = CSV.read(params[:memberlist][:tempfile])
-    MemberList.new(memberlist)
-    p MemberList.memberlist
-#    if params[:exclusionlist]
-#      ExclusionList.new
-#    end
+  if params[:memberlist]
+    session[:members] = MemberList.new(CSV.read(params[:memberlist][:tempfile]))
+    if params[:exclusionlist]
+      session[:exclusions] = ExclusionList.new(CSV.read(params[:exclusionlist][:tempfile]))
+    end
     slim :pairings
-#  else slim :index
-#  end
+  end
 end
 
 post '/pairings' do
-  if $memberlist
-    $pairings = randomise($memberlist,$exclusionlist)
-    p $pairings
+  if session[:members]
+	members = session[:members].members
+	exclusions = session[:exclusions].exclusions
+    pairings = session[:pairings] = PairingsList.new(members,exclusions)
     end
   slim :pairings
 end

@@ -7,19 +7,16 @@ p
 
 h2 Pairings list
 
-- if $memberlist
+- if session[:members]
 	form action="/pairings" method="POST"
 		input.button type="submit" value="Generate pairings"
 - else 
 	p No member list loaded. Please load a member list before trying to generate pairs.
-end
 
 ul
-	- if $pairings
-		- $pairings.each do |names|
+	- if session[:pairings]
+		- session[:pairings].pairings[0].each do |names|
 			li= "#{names[0][0]} and #{names[1][0]}"
-		end
-	end
 	
 h2 Spare member
 
@@ -27,5 +24,3 @@ ul
 	- if $spare
 		- $spare.each do |names|
 			li= "#{names[0]}"
-		end
-	end

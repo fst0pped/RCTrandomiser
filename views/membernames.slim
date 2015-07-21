@@ -8,6 +8,6 @@ form action="/membernames" method="POST"
  	input.button type="submit" value="<< New name"
 
 ul
-	- MemberList.memberlist.sort.each do |name|
+	- session[:members].members.sort.each do |name|
 		li= name[0]
 	end

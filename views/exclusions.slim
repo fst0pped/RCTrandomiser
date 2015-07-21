@@ -20,8 +20,8 @@ form action="/exclusions" method="POST"
 	p #{@errorB}
 
 ul
-	- if $exclusionlist
-		- $exclusionlist.each do |pair|
+	- if session[:exclusions]
+		- session[:exclusions].exclusions.each do |pair|
 			li= "#{pair[0]} and #{pair[1]}"
 	- else
 		p No excluded pairs have been added
