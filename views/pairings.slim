@@ -15,12 +15,12 @@ h2 Pairings list
 
 ul
 	- if session[:pairings]
-		- session[:pairings].pairings[0].each do |names|
+		- session[:pairings].each do |names|
 			li= "#{names[0][0]} and #{names[1][0]}"
 	
 h2 Spare member
 
 ul
-	- if $spare
-		- $spare.each do |names|
+	- if session[:spare_member]
+		- session[:spare_member].each do |names|
 			li= "#{names[0]}"

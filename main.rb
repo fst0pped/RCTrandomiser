@@ -23,10 +23,9 @@ class ExclusionList
 end
 
 class PairingsList
-  attr_accessor :pairings
-  attr_accessor :spare_member
+  attr_accessor :pair_and_spare
     def initialize(members,exclusions)
-      @pairings = randomise(members,exclusions)[0]
+      @pair_and_spare = randomise(members,exclusions)
     end
 end
 
@@ -51,13 +50,13 @@ def randomise(members, exclusions)
     members = members - [b]
     pairings << [a,b]
   end
-  # Using a global for this is terrible practice and I am a bad person. But it works for now.
+  # If there are an odd number of members, also return the unpaired spare
   if members.length == 1
     spare = members
   else
     spare = nil
   end
-  return pairings
+  return pairings,spare
 end
 
 
@@ -131,7 +130,12 @@ post '/pairings' do
   if session[:members]
 	members = session[:members].members
 	exclusions = session[:exclusions].exclusions
-    pairings = session[:pairings] = PairingsList.new(members,exclusions)
+    pair_and_spare = session[:pair_and_spare] = PairingsList.new(members,exclusions)
+    pairings = session[:pairings] = pair_and_spare.pair_and_spare[0]
+    # if member list is even, sometimes one ends up in the spare pile and throws an error
+    # think this might be where the only pairing left is on the exclusion list
+    # shouldn't appear in the wild with large/changing lists, but needs fixing
+    spare_member = session[:spare_member] = pair_and_spare.pair_and_spare[1]
     end
   slim :pairings
 end
