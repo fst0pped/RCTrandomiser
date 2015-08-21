@@ -7,9 +7,16 @@ form action="/membernames" method="POST"
   input type="text" name="newname[]"
   input.button type="submit" value="<< New name"
 
+<<<<<<< HEAD
 - if session[:members]
   ul
     - session[:members].members.sort.each do |name|
     li= name[0]
 - else
   p #{@error}
+=======
+ul
+	- $memberlist.sort.each do |name|
+		li= name[0]
+	end
+>>>>>>> acd40405c545c33aca49a09ba482d39e3a57a2c0
