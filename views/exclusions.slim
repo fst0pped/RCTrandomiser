@@ -1,27 +1,29 @@
 p
-	a href=:pairings Back to pairings list
+  a href=:pairings Back to pairings list
 
 h2 Excluded pairs
 
 form action="/exclusions" method="POST"
- 	- if @errorA or @errorB
-		input type="text" name="exclusionA" value="#{params[:exclusionA]}"
-		input type="text" name="exclusionB" value="#{params[:exclusionB]}"
-	- else
-		input type="text" name="exclusionA"
-		input type="text" name="exclusionB"
+  - if @errorA or @errorB or @error
+    input type="text" name="exclusionA" value="#{params[:exclusionA]}"
+    input type="text" name="exclusionB" value="#{params[:exclusionB]}"
+  - else
+    input type="text" name="exclusionA"
+    input type="text" name="exclusionB"
 		
- 	input.button type="submit" value="<< New pair"
+  input.button type="submit" value="<< New pair"
+
+- if @error
+  p #{@error}
 
 - if @errorA
-	p #{@errorA}
+  p #{@errorA}
 
 - if @errorB
-	p #{@errorB}
+  p #{@errorB}
 
-ul
-	- if session[:exclusions]
-		- session[:exclusions].exclusions.each do |pair|
-			li= "#{pair[0]} and #{pair[1]}"
-	- else
-		p No excluded pairs have been added
+- if session[:exclusions]
+  ul
+    - session[:exclusions].exclusions.each do |pair|
+      li= "#{pair[0]} and #{pair[1]}"
+

@@ -11,7 +11,7 @@ h2 Pairings list
 	form action="/pairings" method="POST"
 		input.button type="submit" value="Generate pairings"
 - else 
-	p No member list loaded. Please load a member list before trying to generate pairs.
+	p #{@error}
 
 ul
 	- if session[:pairings]

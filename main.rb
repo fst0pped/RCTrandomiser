@@ -87,24 +87,27 @@ end
 #
 
 get '/' do
-  $memberlist, $exclusionlist, $pairings, $spare = nil
   slim :index
 end
 
 get '/pairings' do
+  unless session[:pairings]
+    @error = "No members have been added yet"
+  end
   slim :pairings
 end
 
 get '/membernames' do
-  if session[:members]
-    slim :membernames
-  else
-    $error = "You have not submitted any names yet"
-    slim :index
+  unless session[:members]
+    @error = "No members have been added yet"
   end
+  slim :membernames
 end
 
 get '/exclusions' do
+  unless session[:exclusions]
+    @error = "No excluded pairs have been added yet."
+  end
   slim :exclusions
 end
 
@@ -128,11 +131,13 @@ end
 
 post '/pairings' do
   if session[:members]
-	members = session[:members].members
-	exclusions = session[:exclusions].exclusions
+    members = session[:members].members
+    exclusions = session[:exclusions].exclusions
+    
     pair_and_spare = session[:pair_and_spare] = PairingsList.new(members,exclusions)
+    
     pairings = session[:pairings] = pair_and_spare.pair_and_spare[0]
-    # if member list is even, sometimes one ends up in the spare pile and throws an error
+    # if member list is even, sometimes a name ends up in the spare pile and throws an error
     # think this might be where the only pairing left is on the exclusion list
     # shouldn't appear in the wild with large/changing lists, but needs fixing
     spare_member = session[:spare_member] = pair_and_spare.pair_and_spare[1]
@@ -142,22 +147,33 @@ end
 
 post '/membernames' do
   if params[:newname]
-    $memberlist << params[:newname]
+    session[:members].members << params[:newname]
     end
     slim :membernames
 end
 
 post '/exclusions' do
-  if params[:exclusionA] && params[:exclusionB]
+  if session[:members]
+    members = session[:members].members
+  end
+  if session[:exclusions]
+    exclusions = session[:exclusions].exclusions
+  end
+  
+  if params[:exclusionA] == "" || params[:exclusionB] == ""
+    @error = "Name field(s) cannot be blank"
+  elsif params[:exclusionA] == params[:exclusionB]
+    @error = "You can't exclude someone from meeting themselves"
+  elsif params[:exclusionA] != "" && params[:exclusionB] != ""
 
-    exclusionA = checkforname($memberlist,params[:exclusionA])
-    exclusionB = checkforname($memberlist,params[:exclusionB])
+    exclusionA = checkforname(members,params[:exclusionA])
+    exclusionB = checkforname(members,params[:exclusionB])
         
     exclusionA ? @errorA = nil : @errorA = "Name '#{params[:exclusionA]}' is not on the member list"
     exclusionB ? @errorB = nil : @errorB = "Name '#{params[:exclusionB]}' is not on the member list"
       
-    if exclusionB && exclusionA
-      $exclusionlist << [params[:exclusionA],params[:exclusionB]]
+    if exclusionA && exclusionB
+      exclusions << [params[:exclusionA],params[:exclusionB]]
     end
   end
   slim :exclusions

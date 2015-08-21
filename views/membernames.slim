@@ -1,13 +1,15 @@
 p
-	a href=:pairings Back to pairings list
+  a href=:pairings Back to pairings list
 
 h2 Member names
 
 form action="/membernames" method="POST"
- 	input type="text" name="newname[]"
- 	input.button type="submit" value="<< New name"
+  input type="text" name="newname[]"
+  input.button type="submit" value="<< New name"
 
-ul
-	- session[:members].members.sort.each do |name|
-		li= name[0]
-	end
+- if session[:members]
+  ul
+    - session[:members].members.sort.each do |name|
+    li= name[0]
+- else
+  p #{@error}
