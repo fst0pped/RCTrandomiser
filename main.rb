@@ -132,7 +132,9 @@ end
 post '/pairings' do
   if session[:members]
     members = session[:members].members
-    exclusions = session[:exclusions].exclusions
+    if session[:exclusions]
+      exclusions = session[:exclusions].exclusions
+    end
     
     pair_and_spare = session[:pair_and_spare] = PairingsList.new(members,exclusions)
     
@@ -146,9 +148,16 @@ post '/pairings' do
 end
 
 post '/membernames' do
-  if params[:newname]
-    session[:members].members << params[:newname]
-    end
+  newname = params[:newname].collect { |name| name.strip }
+  
+  if newname[0] == ""
+    @error = "Name field cannot be blank"
+  elsif !session[:members]
+    session[:members] = MemberList.new([newname])
+  elsif session[:members]
+    member_test = checkforname(session[:members].members,newname[0])
+    member_test ? @error = "The name '#{newname[0]}' is already on the member list" : session[:members].members << params[:newname]
+  end
     slim :membernames
 end
 
@@ -159,21 +168,27 @@ post '/exclusions' do
   if session[:exclusions]
     exclusions = session[:exclusions].exclusions
   end
+  if params[:exclusionA]
+    exclusionA = params[:exclusionA].strip
+  end
+  if params[:exclusionB]
+    exclusionB = params[:exclusionB].strip
+  end
   
-  if params[:exclusionA] == "" || params[:exclusionB] == ""
+  if exclusionA == "" || exclusionB == ""
     @error = "Name field(s) cannot be blank"
-  elsif params[:exclusionA] == params[:exclusionB]
+  elsif exclusionA == exclusionB
     @error = "You can't exclude someone from meeting themselves"
-  elsif params[:exclusionA] != "" && params[:exclusionB] != ""
+  elsif exclusionA != "" && exclusionB != ""
 
-    exclusionA = checkforname(members,params[:exclusionA])
-    exclusionB = checkforname(members,params[:exclusionB])
+    exclusionA_test = checkforname(members,exclusionA)
+    exclusionB_test = checkforname(members,exclusionB)
         
-    exclusionA ? @errorA = nil : @errorA = "Name '#{params[:exclusionA]}' is not on the member list"
-    exclusionB ? @errorB = nil : @errorB = "Name '#{params[:exclusionB]}' is not on the member list"
+    exclusionA_test ? @errorA = nil : @errorA = "Name '#{exclusionA}' is not on the member list"
+    exclusionB_test ? @errorB = nil : @errorB = "Name '#{exclusionB}' is not on the member list"
       
-    if exclusionA && exclusionB
-      exclusions << [params[:exclusionA],params[:exclusionB]]
+    if exclusionA_test && exclusionB_test
+      exclusions << [exclusionA,exclusionB]
     end
   end
   slim :exclusions
