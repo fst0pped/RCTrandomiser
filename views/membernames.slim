@@ -13,4 +13,8 @@ form action="/membernames" method="POST"
 - if session[:members]
   ul
     - session[:members].members.sort.each do |name|
-      li= name[0]
+      li.names id=name
+        = name[0]
+        name[1]
+        form action="/disablemember" method="POST"
+          input type="submit" name="disable[]" value="Disable member"
