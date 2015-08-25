@@ -1,10 +1,6 @@
-p
-	a href=:pairings Back to pairings list
-
-h2 Download updated files
-
-h3 Updated member list
-
-h3 Updated exclusion list
-
-h3 Updated pairings
+- if session[:pairings]
+  p Download <a href=:pdownload>'Pairings' list</a>
+- if session[:members]
+  p Download <a href=:mdownload>'Members' list</a>
+- if session[:exclusions]
+  p Download <a href=:edownload>'Excluded Pairs'</a> list

@@ -1,28 +1,30 @@
 p
-	a href=:membernames Manage member list
-p	
-	a href=:exclusions Manage exclusion list
-p	
-	a href=:download Download lists (including any updates)
+  a href=:membernames Manage member list
+p   
+  a href=:exclusions Manage exclusion list
+
+h2 Downloadable lists (.csv)
+
+==slim :download
 
 h2 Pairings list
 
 - if session[:members]
-	form action="/pairings" method="POST"
-		input.button type="submit" value="Generate pairings"
-- else 
-	p #{@error}
+  form action="/pairings" method="POST"
+    input.button type="submit" value="Generate pairings"
+
+
+- if @error 
+  p #{@error}
 
 ul
-	- if session[:pairings]
-		- session[:pairings].each do |names|
-			li= "#{names[0][0]} and #{names[1][0]}"
-	- else
-	  p #{@error}
-	
+  - if session[:pairings]
+    - session[:pairings].each do |names|
+      li= "#{names[0][0]} and #{names[1][0]}"
+    
 h2 Spare member
 
 ul
-	- if session[:spare_member]
-		- session[:spare_member].each do |names|
-			li= "#{names[0]}"
+  - if session[:spare_member]
+    - session[:spare_member].each do |names|
+      li= "#{names[0]}"

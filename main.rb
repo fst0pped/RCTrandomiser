@@ -117,8 +117,31 @@ get '/exclusions' do
   slim :exclusions
 end
 
-get '/download' do
-  slim :download
+get '/csv' do
+  time = Time.new
+  timestamp = "#{time.year}-#{time.month}-#{time.day}-#{time.hour}:#{time.min}"
+  
+  pairings = session[:pairings]
+  members = session[:members].members
+  
+  pairingCSV(timestamp, pairings)
+  
+  content_type 'application/csv'
+  attachment "RCT_pairings_#{timestamp}.csv"
+  csv_string = CSV.generate do |csv|
+    pairings.each do |pair|
+      csv << [pair[0][0], pair[1][0]]
+    end
+  end
+  
+  content_type 'application/csv'
+  attachment "RCT_members_#{timestamp}.csv"
+  csv_string = CSV.generate do |csv|
+    members.each do |member|
+      csv << [member[0], member[1]]
+    end
+  end
+        
 end
 
 #
