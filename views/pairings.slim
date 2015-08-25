@@ -17,6 +17,8 @@ ul
 	- if session[:pairings]
 		- session[:pairings].each do |names|
 			li= "#{names[0][0]} and #{names[1][0]}"
+	- else
+	  p #{@error}
 	
 h2 Spare member
 

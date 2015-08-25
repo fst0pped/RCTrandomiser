@@ -13,7 +13,12 @@ class MemberList
   def initialize(list)
     @members = list
   end
+  
+  def self.removedisabled(list)
+    return list.reject { |member| member[1] == "D" }
+  end
 end
+
 
 class ExclusionList
   attr_accessor :exclusions
@@ -22,57 +27,58 @@ class ExclusionList
   end
 end
 
+
 class PairingsList
   attr_accessor :pair_and_spare
-    def initialize(members,exclusions)
-      @pair_and_spare = randomise(members,exclusions)
+  
+  def initialize(members,exclusions)
+    @pair_and_spare = PairingsList.randomise(members,exclusions)
+  end
+  
+  def self.randomise(members, exclusions)
+    pairings = []
+    while members.length > 1 # in case list length is odd
+      # extract name from members
+      a = members.sample
+      members = members - [a]
+      # if no exclusion list exists, skip over that logic
+      if exclusions
+        notexcluded = PairingsList.exclude(a,members,exclusions)
+        # set name from notexcluded, but remove from members so it can't be reused
+        b = notexcluded.sample
+      else
+        b = members.sample
+      end
+      members = members - [b]
+      pairings << [a,b]
     end
+    # If there are an odd number of members, also return the unpaired spare
+    if members.length == 1
+      spare = members
+    else
+      spare = nil
+    end
+    return pairings,spare
+  end
+  
+  def self.exclude(name,members,exclusions)
+    toexclude = []
+    exclusions.each do |item| 
+      if [item[0]] == name
+        toexclude << [item[1]]
+      elsif [item[1]] == name
+        toexclude << [item[0]]
+      end
+    end
+    # remove names from the members array if they match any names on the toexclude array
+    return members.reject { |x| toexclude.include?(x) }
+  end
+  
 end
 
 #-----------------------------------------------------------------------
 #Functions
 #-----------------------------------------------------------------------
-
-def randomise(members, exclusions)
-  pairings = []
-  while members.length > 1 # in case list length is odd
-    # extract name from members
-    a = members.sample
-    members = members - [a]
-    # if no exclusion list exists, skip over that logic
-    if exclusions
-      notexcluded = exclude(a,members,exclusions)
-      # set name from notexcluded, but remove from members so it can't be reused
-      b = notexcluded.sample
-    else
-      b = members.sample
-    end
-    members = members - [b]
-    pairings << [a,b]
-  end
-  # If there are an odd number of members, also return the unpaired spare
-  if members.length == 1
-    spare = members
-  else
-    spare = nil
-  end
-  return pairings,spare
-end
-
-
-def exclude(name,members,exclusions)
-  toexclude = []
-  exclusions.each do |item| 
-    if [item[0]] == name
-      toexclude << [item[1]]
-    elsif [item[1]] == name
-      toexclude << [item[0]]
-    end
-  end
-  # remove names from the members array if they match any names on the toexclude array
-  return members.reject { |x| toexclude.include?(x) }
-end
-
 
 def checkforname(list,name)
   list.include? [name]
@@ -136,13 +142,27 @@ post '/pairings' do
       exclusions = session[:exclusions].exclusions
     end
     
-    pair_and_spare = session[:pair_and_spare] = PairingsList.new(members,exclusions)
+    active_members = MemberList.removedisabled(members)
+    
+    pair_and_spare = session[:pair_and_spare] = PairingsList.new(active_members,exclusions)
     
     pairings = session[:pairings] = pair_and_spare.pair_and_spare[0]
-    # if member list is even, sometimes a name ends up in the spare pile and throws an error
+    # if member list is even, sometimes a pair ends up with only one name and throws an error
     # think this might be where the only pairing left is on the exclusion list
     # shouldn't appear in the wild with large/changing lists, but needs fixing
-    spare_member = session[:spare_member] = pair_and_spare.pair_and_spare[1]
+    # the below is a bit hacky, but allows the app to fail gracefully in the meantime
+    pairings.each do |pair|
+      pair.each do |name|
+        if name == nil
+          @error = "There has been an error while generating pairings. Please try again."
+          pairings = session[:pairings] = nil
+        end
+      end
+    end
+    unless @error
+      spare_member = session[:spare_member] = pair_and_spare.pair_and_spare[1]
+    end
+    
     end
   slim :pairings
 end
@@ -156,9 +176,30 @@ post '/membernames' do
     session[:members] = MemberList.new([newname])
   elsif session[:members]
     member_test = checkforname(session[:members].members,newname[0])
-    member_test ? @error = "The name '#{newname[0]}' is already on the member list" : session[:members].members << params[:newname]
+    member_test ? @error = "The name '#{newname[0]}' is already on the member list" : session[:members].members << newname
+  else @error = "Unforseen error. Please contact program author with details of what you were trying to do"
   end
     slim :membernames
+end
+
+post '/disablemember' do
+  member_name = params[:disable]
+  session[:members].members.each do |name|
+    if [name[0]] == member_name
+      name.insert(1,"D")
+    end
+  end
+  slim :membernames
+end
+
+post '/enablemember' do
+  member_name = params[:enable]
+  session[:members].members.each do |name|
+    if [name[0]] == member_name
+      name.delete("D")
+    end
+  end
+  slim :membernames
 end
 
 post '/exclusions' do
@@ -168,12 +209,9 @@ post '/exclusions' do
   if session[:exclusions]
     exclusions = session[:exclusions].exclusions
   end
-  if params[:exclusionA]
-    exclusionA = params[:exclusionA].strip
-  end
-  if params[:exclusionB]
-    exclusionB = params[:exclusionB].strip
-  end
+
+  exclusionA = params[:exclusionA].strip
+  exclusionB = params[:exclusionB].strip
   
   if exclusionA == "" || exclusionB == ""
     @error = "Name field(s) cannot be blank"
@@ -190,6 +228,9 @@ post '/exclusions' do
     if exclusionA_test && exclusionB_test
       exclusions << [exclusionA,exclusionB]
     end
+  
+  else @error = "Unforseen error. Please contact program author with details of what you were trying to do"
+  
   end
   slim :exclusions
 end
