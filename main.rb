@@ -84,6 +84,11 @@ def checkforname(list,name)
   list.include? [name]
 end
 
+def timestamp(time)
+  timestamp = "#{time.year}-#{time.month}-#{time.day}-#{time.hour}:#{time.min}"
+  return timestamp
+end
+
 #-----------------------------------------------------------------------
 #Controllers
 #-----------------------------------------------------------------------
@@ -117,14 +122,10 @@ get '/exclusions' do
   slim :exclusions
 end
 
-get '/csv' do
-  time = Time.new
-  timestamp = "#{time.year}-#{time.month}-#{time.day}-#{time.hour}:#{time.min}"
+get '/csv/pdownload' do
+  timestamp = timestamp(Time.new)
   
   pairings = session[:pairings]
-  members = session[:members].members
-  
-  pairingCSV(timestamp, pairings)
   
   content_type 'application/csv'
   attachment "RCT_pairings_#{timestamp}.csv"
@@ -133,6 +134,12 @@ get '/csv' do
       csv << [pair[0][0], pair[1][0]]
     end
   end
+end
+  
+get '/csv/mdownload' do
+  timestamp = timestamp(Time.new)
+    
+  members = session[:members].members
   
   content_type 'application/csv'
   attachment "RCT_members_#{timestamp}.csv"
@@ -140,8 +147,21 @@ get '/csv' do
     members.each do |member|
       csv << [member[0], member[1]]
     end
-  end
-        
+  end     
+end
+
+get '/csv/edownload' do
+  timestamp = timestamp(Time.new)
+    
+  exclusions = session[:exclusions].exclusions
+  
+  content_type 'application/csv'
+  attachment "RCT_exclusionlist_#{timestamp}.csv"
+  csv_string = CSV.generate do |csv|
+    exclusions.each do |excluded|
+      csv << [excluded[0], excluded[1]]
+    end
+  end     
 end
 
 #
