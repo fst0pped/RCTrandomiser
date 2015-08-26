@@ -4,11 +4,11 @@ My first application, getting familiar with Ruby and Sinatra. The ultimate goal 
 ###Features still to add
 - ~~Replace globals with session variables~~
 - ~~Download .csv files of members/exclusions/pairings~~
-- Remove list items (all lists) [in progress]
+- ~~Remove list items (all lists)~~
 - ~~Disable/re-enable members without deleting (e.g. "I'm on holiday this week, can I skip this session?")~~
 - ~~Rewrite error messages so they are handled consistently~~
 - Style and layout (including layout template for header information)
-- Hardening for web use (making sure inputs are validated etc)
+- Hardening for web use (making sure inputs are validated etc) [in progress]
 
 ###Stretch features
 - 'Undo' functionality?

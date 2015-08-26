@@ -81,7 +81,8 @@ end
 #-----------------------------------------------------------------------
 
 def checkforname(list,name)
-  list.include? [name]
+  check = list.each { |item| item.include?(name) }
+  return check
 end
 
 def timestamp(time)
@@ -245,6 +246,17 @@ post '/enablemember' do
   slim :membernames
 end
 
+post '/deletemember' do
+  member_name = params[:delete]
+  # deletes member from the overall members list
+  session[:members].members.reject! { |name| [name[0]] == member_name }
+  # if exclusion list exists, also deletes all pairs that include the member's name
+  if session[:exclusions]
+    session[:exclusions].exclusions.reject! { |names| [names[0]] == member_name || [names[1]] == member_name }
+  end
+  slim :membernames
+end
+
 post '/exclusions' do
   if session[:members]
     members = session[:members].members
@@ -268,12 +280,21 @@ post '/exclusions' do
     exclusionA_test ? @errorA = nil : @errorA = "Name '#{exclusionA}' is not on the member list"
     exclusionB_test ? @errorB = nil : @errorB = "Name '#{exclusionB}' is not on the member list"
       
-    if exclusionA_test && exclusionB_test
+    if exclusionA_test && exclusionB_test && session[:exclusions]
       exclusions << [exclusionA,exclusionB]
+    elsif exclusionA_test && exclusionB_test
+      session[:exclusions] = ExclusionList.new([[exclusionA,exclusionB]])
     end
   
   else @error = "Unforseen error. Please contact program author with details of what you were trying to do"
   
   end
+  slim :exclusions
+end
+
+post '/deleteexclusion' do
+  excluded_pair = params[:delete]
+  p excluded_pair
+  session[:exclusions].exclusions.reject! { |pair| "#{pair[0]}, #{pair[1]}" == excluded_pair }
   slim :exclusions
 end

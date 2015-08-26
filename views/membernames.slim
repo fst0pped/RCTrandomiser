@@ -21,6 +21,9 @@ h3 Disabled
           form action="/enablemember" method="POST"
             input type="hidden" name="enable[]" value=name[0]
             input type="submit" value="Enable member"
+          form action="/deletemember" method="POST"
+            input type="hidden" name="delete[]" value=name[0]
+            input type="submit" value="Delete member"
 
 h3 Active
 
@@ -33,3 +36,6 @@ h3 Active
           form action="/disablemember" method="POST"
             input type="hidden" name="disable[]" value=name[0]
             input type="submit" value="Disable Member"
+          form action="/deletemember" method="POST"
+            input type="hidden" name="delete[]" value=name[0]
+            input type="submit" value="Delete member"

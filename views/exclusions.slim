@@ -26,4 +26,7 @@ form action="/exclusions" method="POST"
   ul
     - session[:exclusions].exclusions.each do |pair|
       li= "#{pair[0]} and #{pair[1]}"
+      form action="/deleteexclusion" method="POST"
+        input type="hidden" name="delete" value="#{pair[0]}, #{pair[1]}"
+        input type="submit" value="Delete pair"
 
