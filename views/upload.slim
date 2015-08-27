@@ -1,0 +1,14 @@
+form.upload action="/upload" enctype="multipart/form-data" method="post"
+  p Please upload a CSV file containing a list of group members
+  div
+    input type="file" name="memberlist" accept=".csv"
+
+  p If you have a list of excluded pairs, please upload a CSV file.
+  div
+    input type="file" name="exclusionlist"  accept=".csv"
+
+    p 
+      input type="submit" value="Submit"
+
+-if @error
+  p.error #{@error}

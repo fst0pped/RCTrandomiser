@@ -14,13 +14,13 @@ form action="/exclusions" method="POST"
   input.button type="submit" value="<< New pair"
 
 - if @error
-  p #{@error}
+  p.error #{@error}
 
 - if @errorA
-  p #{@errorA}
+  p.error #{@errorA}
 
 - if @errorB
-  p #{@errorB}
+  p.error #{@errorB}
 
 - if session[:exclusions]
   ul

@@ -102,6 +102,10 @@ get '/' do
   slim :index
 end
 
+get '/upload' do
+  slim :upload
+end
+
 get '/pairings' do
   unless session[:pairings]
     @error = "No members have been added yet"
@@ -169,13 +173,15 @@ end
 #Post
 #
 
-post '/' do
+post '/upload' do
   if params[:memberlist]
     session[:members] = MemberList.new(CSV.read(params[:memberlist][:tempfile]))
     if params[:exclusionlist]
       session[:exclusions] = ExclusionList.new(CSV.read(params[:exclusionlist][:tempfile]))
     end
     slim :pairings
+  else @error = "Cannot submit unless there is a list of members attached."
+    slim :upload
   end
 end
 

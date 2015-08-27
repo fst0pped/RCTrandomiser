@@ -7,8 +7,7 @@ My first application, getting familiar with Ruby and Sinatra. The ultimate goal 
 - ~~Remove list items (all lists)~~
 - ~~Disable/re-enable members without deleting (e.g. "I'm on holiday this week, can I skip this session?")~~
 - ~~Rewrite error messages so they are handled consistently~~
-- Style and layout (including layout template for header information)
-- Hardening for web use (making sure inputs are validated etc) [in progress]
+- Style and layout (including layout template for header information) [in progress]
 
 ###Stretch features
 - 'Undo' functionality?

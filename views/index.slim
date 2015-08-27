@@ -1,13 +1,7 @@
-p.error =$error
+h1 Random Coffee Trials pairing tool
 
-form action="" enctype="multipart/form-data" method="post"
-	p Please upload a CSV file containing a list of group members
-	div
-		input type="file" name="memberlist" accept=".csv"
+p This tool is intended to help people running Nesta Random Coffee Trials by taking some of the manual grind out of maintaining lists of pairs, preventing duplicate meet-ups etc. 
 
-	p If you have a list of excluded pairs, please upload a CSV file.
-	div
-		input type="file" name="exclusionlist"  accept=".csv"
+== slim :upload
 
-	p 
-		input type="submit" value="Submit"
+== slim :membernames
