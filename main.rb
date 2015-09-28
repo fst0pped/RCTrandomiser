@@ -81,8 +81,7 @@ end
 #-----------------------------------------------------------------------
 
 def checkforname(list,name)
-  check = list.each { |item| item.include?(name) }
-  return check
+  list.include?(name)
 end
 
 def timestamp(time)
@@ -102,29 +101,39 @@ get '/' do
   slim :index
 end
 
+get '/index' do
+  slim :index
+end
+
 get '/upload' do
   slim :upload
 end
 
 get '/pairings' do
   unless session[:pairings]
-    @error = "No members have been added yet"
+    @pairing_error = "No members have been added yet"
   end
   slim :pairings
 end
 
 get '/membernames' do
   unless session[:members]
-    @error = "No members have been added yet"
+    @membername_error = "No members have been added yet"
   end
-  slim :membernames
+  slim :index
 end
 
 get '/exclusions' do
   unless session[:exclusions]
-    @error = "No excluded pairs have been added yet."
+    @exclusion_error = "No excluded pairs have been added yet."
   end
   slim :exclusions
+end
+
+get '/download' do
+  unless session[:members] || session[:exclusions]
+    @download_error = "No lists are available for download yet."
+  end
 end
 
 get '/csv/pdownload' do
@@ -173,16 +182,20 @@ end
 #Post
 #
 
+post '/clearsession' do
+  session.clear
+  slim :index
+end
+
 post '/upload' do
   if params[:memberlist]
     session[:members] = MemberList.new(CSV.read(params[:memberlist][:tempfile]))
     if params[:exclusionlist]
       session[:exclusions] = ExclusionList.new(CSV.read(params[:exclusionlist][:tempfile]))
     end
-    slim :pairings
-  else @error = "Cannot submit unless there is a list of members attached."
-    slim :upload
+  else @upload_error = "Cannot submit unless there is a list of members attached."
   end
+  slim :index
 end
 
 post '/pairings' do
@@ -204,7 +217,7 @@ post '/pairings' do
     pairings.each do |pair|
       pair.each do |name|
         if name == nil
-          @error = "There has been an error while generating pairings. Please try again."
+          @pairings_error = "There has been an error while generating pairings. Please try again."
           pairings = session[:pairings] = nil
         end
       end
@@ -221,15 +234,16 @@ post '/membernames' do
   newname = params[:newname].collect { |name| name.strip }
   
   if newname[0] == ""
-    @error = "Name field cannot be blank"
+    @membernames_error = "Name field cannot be blank"
   elsif !session[:members]
     session[:members] = MemberList.new([newname])
   elsif session[:members]
     member_test = checkforname(session[:members].members,newname[0])
-    member_test ? @error = "The name '#{newname[0]}' is already on the member list" : session[:members].members << newname
-  else @error = "Unforseen error. Please contact program author with details of what you were trying to do"
+    member_test ? @membernames_error = "The name '#{newname[0]}' is already on the member list" : session[:members].members << newname
+    p session[:members].members
+  else @membernames_error = "Unforseen error. Please contact program author with details of what you were trying to do"
   end
-    slim :membernames
+    slim :index
 end
 
 post '/disablemember' do
@@ -239,7 +253,7 @@ post '/disablemember' do
       name.insert(1,"D")
     end
   end
-  slim :membernames
+  slim :index
 end
 
 post '/enablemember' do
@@ -249,7 +263,7 @@ post '/enablemember' do
       name.delete("D")
     end
   end
-  slim :membernames
+  slim :index
 end
 
 post '/deletemember' do
@@ -260,7 +274,7 @@ post '/deletemember' do
   if session[:exclusions]
     session[:exclusions].exclusions.reject! { |names| [names[0]] == member_name || [names[1]] == member_name }
   end
-  slim :membernames
+  slim :index
 end
 
 post '/exclusions' do
@@ -275,9 +289,9 @@ post '/exclusions' do
   exclusionB = params[:exclusionB].strip
   
   if exclusionA == "" || exclusionB == ""
-    @error = "Name field(s) cannot be blank"
+    @exclusion_error = "Name field(s) cannot be blank"
   elsif exclusionA == exclusionB
-    @error = "You can't exclude someone from meeting themselves"
+    @exclusion_error = "You can't exclude someone from meeting themselves"
   elsif exclusionA != "" && exclusionB != ""
 
     exclusionA_test = checkforname(members,exclusionA)

@@ -1,38 +1,38 @@
-h2 Member names
+div id="membernames"
+  h2 Member names
+  
+  form action="/membernames" method="POST"
+    div class="input"
+      input type="text" name="newname[]"
+      input.button type="submit" value="<< New name"
 
-form action="/membernames" method="POST"
-  input type="text" name="newname[]"
-  input.button type="submit" value="<< New name"
+  - if @membernames_error
+      p.error #{@membernames_error}
 
-- if @error
-    p.error #{@error}
-    
-h3 Disabled
+  - if session[:members]
+    table
+      - session[:members].members.sort.each do |name|
+        - if name[1] == "D"
+          tr.disabled
+            td = name[0]
+            td 
+              form.inline action="/enablemember" method="POST"
+                input type="hidden" name="enable[]" value=name[0]
+                input type="submit" value="Activate"
+            td
+              form.inline action="/deletemember" method="POST"
+                input type="hidden" name="delete[]" value=name[0]
+                input type="submit" value="Delete"
 
-- if session[:members]
-  ul
-    - session[:members].members.sort.each do |name|
-      - if name[1] == "D"
-        li.names id=name
-          = name[0]
-          form action="/enablemember" method="POST"
-            input type="hidden" name="enable[]" value=name[0]
-            input type="submit" value="Enable member"
-          form action="/deletemember" method="POST"
-            input type="hidden" name="delete[]" value=name[0]
-            input type="submit" value="Delete member"
-
-h3 Active
-
-- if session[:members]
-  ul
-    - session[:members].members.sort.each do |name|
-      - if name[1] != "D"
-        li.names id=name
-          = name[0]
-          form action="/disablemember" method="POST"
-            input type="hidden" name="disable[]" value=name[0]
-            input type="submit" value="Disable Member"
-          form action="/deletemember" method="POST"
-            input type="hidden" name="delete[]" value=name[0]
-            input type="submit" value="Delete member"
+      - session[:members].members.sort.each do |name|     
+        - if name[1] != "D"
+          tr.active
+            td = name[0]
+            td 
+              form.inline action="/disablemember" method="POST"
+                input type="hidden" name="disable[]" value=name[0]
+                input type="submit" value="Disable"
+            td
+              form.inline action="/deletemember" method="POST"
+                input type="hidden" name="delete[]" value=name[0]
+                input type="submit" value="Delete"

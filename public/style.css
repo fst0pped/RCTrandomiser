@@ -1,3 +1,44 @@
-upload {
-  border: 1px solid #000
+body {
+  /*background-color: #00ff00;*/
+  font-family: arial,sans-serif;
+  max-width: 900px;
+  }
+
+#clearsession,#upload,#membernames,#download,#pairings {
+  padding: 10px;
+  border: 1px solid #000;
+  margin: 10px;
+  }
+
+form .input {
+  padding: 0px 10px;
+  border-left: 3px solid #000;
+  }
+  
+p.error {
+  color: #f00;
+  font-weight: strong;
+  }
+
+/*Table stylings*/
+
+table {
+  width: 100%;
+  padding: 20px 0px;
+  }
+
+table td:first-child {
+  width: 500px;
+  }
+
+table tr:nth-child(even) {
+  background-color: #eee;
+  }
+
+table tr:nth-child(odd) {
+  background-color: #fff;
+  }
+  
+table tr.disabled {
+  background-color: #fdd;
   }

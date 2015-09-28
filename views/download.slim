@@ -1,6 +1,13 @@
-- if session[:pairings]
-  p Download <a href=csv/pdownload>'Pairings' list</a>
-- if session[:members]
-  p Download <a href=csv/mdownload>'Members' list</a>
-- if session[:exclusions]
-  p Download <a href=csv/edownload>'Excluded Pairs' list</a>
+div id="download"
+
+  h2 Downloadable lists (.csv)
+
+  - if session[:pairings]
+    p Download <a href=csv/pdownload>'Pairings' list</a>
+  - if session[:members]
+    p Download <a href=csv/mdownload>'Members' list</a>
+  - if session[:exclusions]
+    p Download <a href=csv/edownload>'Excluded Pairs' list</a>
+    
+  - if @download_error
+    p.error #{@download_error}

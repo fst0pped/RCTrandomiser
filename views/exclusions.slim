@@ -4,17 +4,18 @@ p
 h2 Excluded pairs
 
 form action="/exclusions" method="POST"
-  - if @errorA or @errorB or @error
-    input type="text" name="exclusionA" value="#{params[:exclusionA]}"
-    input type="text" name="exclusionB" value="#{params[:exclusionB]}"
-  - else
-    input type="text" name="exclusionA"
-    input type="text" name="exclusionB"
+  div class="input"
+    - if @errorA or @errorB or @exclusion_error
+      input type="text" name="exclusionA" value="#{params[:exclusionA]}"
+      input type="text" name="exclusionB" value="#{params[:exclusionB]}"
+    - else
+      input type="text" name="exclusionA"
+      input type="text" name="exclusionB"
 		
-  input.button type="submit" value="<< New pair"
+    input.button type="submit" value="<< New pair"
 
-- if @error
-  p.error #{@error}
+- if @exclusion_error
+  p.error #{@exclusion_error}
 
 - if @errorA
   p.error #{@errorA}
@@ -23,10 +24,12 @@ form action="/exclusions" method="POST"
   p.error #{@errorB}
 
 - if session[:exclusions]
-  ul
+  table
     - session[:exclusions].exclusions.each do |pair|
-      li= "#{pair[0]} and #{pair[1]}"
-      form action="/deleteexclusion" method="POST"
-        input type="hidden" name="delete" value="#{pair[0]}, #{pair[1]}"
-        input type="submit" value="Delete pair"
+      tr
+        td "#{pair[0]} and #{pair[1]}"
+        td
+          form action="/deleteexclusion" method="POST"
+            input type="hidden" name="delete" value="#{pair[0]}, #{pair[1]}"
+            input type="submit" value="Delete pair"
 

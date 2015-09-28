@@ -1,7 +1,17 @@
-h1 Random Coffee Trials pairing tool
+div id="index"
 
-p This tool is intended to help people running Nesta Random Coffee Trials by taking some of the manual grind out of maintaining lists of pairs, preventing duplicate meet-ups etc. 
+  h1 Random Coffee Trials pairing tool
 
-== slim :upload
+  p This tool is intended to help people running Nesta Random Coffee Trials by taking some of the manual grind out of maintaining lists of pairs, preventing duplicate meet-ups etc. 
 
-== slim :membernames
+  == slim :clearsession
+  
+  p If you have a list of names (in CSV format) from a previous session that you want to use, upload them using the form below.
+
+  == slim :upload
+
+  p Then either check that the names have entered correctly, or build a member list from scratch using the below form.
+
+  == slim :membernames
+  
+  p Once you're happy with your list of members, click through to the <a href="pairings">pairings page</a>.
