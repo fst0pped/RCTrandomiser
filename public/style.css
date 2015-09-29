@@ -1,13 +1,41 @@
 body {
   /*background-color: #00ff00;*/
   font-family: arial,sans-serif;
-  max-width: 900px;
+  text-align: center;
   }
 
 #clearsession,#upload,#membernames,#download,#pairings {
   padding: 10px;
   border: 1px solid #000;
   margin: 10px;
+  }
+  
+#nav {
+  text-align: right;
+  }
+  
+#nav li {
+  display: inline;
+  padding: 0em 1em;
+  }
+
+p.stepbutton {
+  border-radius: 1em;
+  width: 3em;
+  font-size: 2em;
+  background-color: #00d;
+  padding: 1.5em 2em;
+  margin-left: auto;
+  margin-right: auto;
+  }
+  
+p.stepbutton a {
+  color: #fff;
+  text-decoration: none;
+  }
+
+p.stepbutton:hover {
+  background-color: #009;
   }
 
 form .input {

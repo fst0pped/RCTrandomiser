@@ -98,11 +98,17 @@ end
 #
 
 get '/' do
+  session.clear
   slim :index
 end
 
 get '/index' do
+  session.clear
   slim :index
+end
+
+get '/about' do
+  slim :about
 end
 
 get '/upload' do
@@ -120,7 +126,7 @@ get '/membernames' do
   unless session[:members]
     @membername_error = "No members have been added yet"
   end
-  slim :index
+  slim :membernames
 end
 
 get '/exclusions' do
@@ -195,7 +201,7 @@ post '/upload' do
     end
   else @upload_error = "Cannot submit unless there is a list of members attached."
   end
-  slim :index
+  slim :membernames
 end
 
 post '/pairings' do
@@ -243,7 +249,7 @@ post '/membernames' do
     p session[:members].members
   else @membernames_error = "Unforseen error. Please contact program author with details of what you were trying to do"
   end
-    slim :index
+    slim :membernames
 end
 
 post '/disablemember' do
@@ -253,7 +259,7 @@ post '/disablemember' do
       name.insert(1,"D")
     end
   end
-  slim :index
+  slim :membernames
 end
 
 post '/enablemember' do
@@ -263,7 +269,7 @@ post '/enablemember' do
       name.delete("D")
     end
   end
-  slim :index
+  slim :membernames
 end
 
 post '/deletemember' do
@@ -274,7 +280,7 @@ post '/deletemember' do
   if session[:exclusions]
     session[:exclusions].exclusions.reject! { |names| [names[0]] == member_name || [names[1]] == member_name }
   end
-  slim :index
+  slim :membernames
 end
 
 post '/exclusions' do

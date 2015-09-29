@@ -4,8 +4,6 @@ p
 p   
   a href=:exclusions Make changes to list of previous/excluded pairings
 
-==slim :download
-
 div id="pairings"
 
   h2 Pairings list
@@ -29,3 +27,5 @@ div id="pairings"
     - if session[:spare_member]
       - session[:spare_member].each do |names|
         li= "#{names[0]}"
+
+  ==slim :download
