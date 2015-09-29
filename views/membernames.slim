@@ -1,5 +1,5 @@
 div id="membernames"
-  h2 Member names
+  h2 Edit the list of members
   
   form action="/membernames" method="POST"
     div class="input"
@@ -37,5 +37,4 @@ div id="membernames"
                 input type="hidden" name="delete[]" value=name[0]
                 input type="submit" value="Delete"
   
-  p.stepbutton
-    a href=:pairings Next step
+  a.stepbutton href=:pairings Next

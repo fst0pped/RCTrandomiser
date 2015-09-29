@@ -1,16 +1,15 @@
 div id="upload"
 
   form.upload action="/upload" enctype="multipart/form-data" method="post"
-    div class="input"
-      p Group members
+    div.field
+      h2 List of group members:
       input type="file" name="memberlist" accept=".csv"
 
-    div class="input"
-      p Pairs to be excluded.
+    div.field
+      h2 List of pairs to be excluded:
       input type="file" name="exclusionlist"  accept=".csv"
 
-    p 
-      input type="submit" value="Submit"
+    input.stepbutton type="submit" value="Submit"
 
   -if @upload_error
     p.error #{@upload_error}

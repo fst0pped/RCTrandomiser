@@ -4,7 +4,7 @@ body {
   text-align: center;
   }
 
-#clearsession,#upload,#membernames,#download,#pairings {
+#clearsession,#membernames,#download,#pairings {
   padding: 10px;
   border: 1px solid #000;
   margin: 10px;
@@ -19,28 +19,36 @@ body {
   padding: 0em 1em;
   }
 
-p.stepbutton {
-  border-radius: 1em;
+.stepbutton {
+  display: block;
   width: 3em;
   font-size: 2em;
+  color: #fff;
+  text-decoration: none;
   background-color: #00d;
   padding: 1.5em 2em;
   margin-left: auto;
   margin-right: auto;
-  }
-  
-p.stepbutton a {
-  color: #fff;
-  text-decoration: none;
+  margin-top: 1em;
+  border-radius: 1em;
   }
 
-p.stepbutton:hover {
+input.stepbutton {
+  border: none;
+  padding: 1.5em 3.5em;
+  }
+
+.stepbutton:hover {
   background-color: #009;
   }
 
-form .input {
-  padding: 0px 10px;
-  border-left: 3px solid #000;
+form.upload div.field {
+  margin-bottom: 1em;
+  }
+
+form.upload h2 {
+  display: inline;
+  margin-right: 1em;
   }
   
 p.error {
