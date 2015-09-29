@@ -140,6 +140,7 @@ get '/download' do
   unless session[:members] || session[:exclusions]
     @download_error = "No lists are available for download yet."
   end
+  slim :download
 end
 
 get '/csv/pdownload' do

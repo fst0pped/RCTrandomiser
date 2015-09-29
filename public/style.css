@@ -3,12 +3,6 @@ body {
   font-family: arial,sans-serif;
   text-align: center;
   }
-
-#clearsession,#membernames,#download,#pairings {
-  padding: 10px;
-  border: 1px solid #000;
-  margin: 10px;
-  }
   
 #nav {
   text-align: right;
@@ -21,7 +15,7 @@ body {
 
 .stepbutton {
   display: block;
-  width: 3em;
+  width: 4.5em;
   font-size: 2em;
   color: #fff;
   text-decoration: none;
@@ -35,11 +29,23 @@ body {
 
 input.stepbutton {
   border: none;
-  padding: 1.5em 3.5em;
+  padding: 1.5em 4.5em;
   }
 
 .stepbutton:hover {
   background-color: #009;
+  }
+  
+a.floatleft {
+  display: block;
+  float:left;
+  margin: 1em;
+  }
+ 
+a.floatright {  
+  display: block;
+  float:right;
+  margin: 1em;
   }
 
 form.upload div.field {
@@ -54,6 +60,12 @@ form.upload h2 {
 p.error {
   color: #f00;
   font-weight: strong;
+  }
+  
+.pairings ul {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
   }
 
 /*Table stylings*/

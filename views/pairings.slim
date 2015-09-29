@@ -1,17 +1,10 @@
-p
-  a href=:index Manage list of members
-
-p   
-  a href=:exclusions Make changes to list of previous/excluded pairings
-
-div id="pairings"
-
-  h2 Pairings list
+div.pairings
 
   - if session[:members]
     form action="/pairings" method="POST"
-      input.button type="submit" value="Generate pairings"
+      input.stepbutton type="submit" value="Generate pairs"
 
+  h2 Pairings list
 
   - if @pairing_error 
     p.error #{@pairing_error}
@@ -27,5 +20,8 @@ div id="pairings"
     - if session[:spare_member]
       - session[:spare_member].each do |names|
         li= "#{names[0]}"
-
-  ==slim :download
+        
+  a.stepbutton href=:download Download
+  
+  a.floatleft href=:membernames Back to manage list of members
+  a.floatright href=:exclusions Edit list of previous/excluded pairings
