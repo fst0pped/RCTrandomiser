@@ -1,7 +1,6 @@
 div id="download"
 
-  h2 Downloadable lists (.csv)
-
+  h3 Downloads
   - if session[:pairings]
     p Download <a href=csv/pdownload>'Pairings' list</a>
   - if session[:members]
@@ -11,5 +10,3 @@ div id="download"
     
   - if @download_error
     p.error #{@download_error}
-    
-  a.floatleft href=:pairings Back to list of pairings

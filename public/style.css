@@ -16,11 +16,13 @@ body {
 .stepbutton {
   display: block;
   width: 4.5em;
+  height: 3em;
+  line-height: 3em;
   font-size: 2em;
   color: #fff;
   text-decoration: none;
   background-color: #00d;
-  padding: 1.5em 2em;
+  padding: 0.5em 1.5em;
   margin-left: auto;
   margin-right: auto;
   margin-top: 1em;
@@ -29,7 +31,11 @@ body {
 
 input.stepbutton {
   border: none;
-  padding: 1.5em 4.5em;
+  width: 0em;
+  padding: 2em 3.75em;
+  line-height: 0em;
+  padding-left: 2.25em;
+  padding-right: 5.25em;
   }
 
 .stepbutton:hover {

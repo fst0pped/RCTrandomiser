@@ -19,6 +19,9 @@ form action="/exclusions" method="POST"
 
 - if @errorB
   p.error #{@errorB}
+  
+- if @error_pair
+  p.error #{@error_pair}
 
 - if session[:exclusions]
   table

@@ -80,8 +80,34 @@ end
 #Functions
 #-----------------------------------------------------------------------
 
+#def checkforname(list,name)
+#  list.include?(name)
+#end
+
 def checkforname(list,name)
-  list.include?(name)
+  names_only = []
+  list.each do |item|
+    names_only << item[0]
+  end
+  names_only.include?(name)
+end
+
+def checkforpair(list,pair)
+  p list
+  list.each do |item|
+    p item
+    item_reverse = [item[1],item[0]]
+    p item_reverse
+    if item == pair || item_reverse == pair
+      pair_exists = true
+      break
+    end
+  end
+  if pair_exists = true
+    return true
+  else
+    return false
+  end
 end
 
 def timestamp(time)
@@ -220,7 +246,7 @@ post '/pairings' do
     # if member list is even, sometimes a pair ends up with only one name and throws an error
     # think this might be where the only pairing left is on the exclusion list
     # shouldn't appear in the wild with large/changing lists, but needs fixing
-    # the below is a bit hacky, but allows the app to fail gracefully in the meantime
+    # the below is a bit hacky, but allows the app to fail gracefully while I think of a solution
     pairings.each do |pair|
       pair.each do |name|
         if name == nil
@@ -247,7 +273,6 @@ post '/membernames' do
   elsif session[:members]
     member_test = checkforname(session[:members].members,newname[0])
     member_test ? @membernames_error = "The name '#{newname[0]}' is already on the member list" : session[:members].members << newname
-    p session[:members].members
   else @membernames_error = "Unforseen error. Please contact program author with details of what you were trying to do"
   end
     slim :membernames
@@ -303,13 +328,18 @@ post '/exclusions' do
 
     exclusionA_test = checkforname(members,exclusionA)
     exclusionB_test = checkforname(members,exclusionB)
+    exclusion_pair_test = checkforpair(exclusions, [exclusionA,exclusionB])
+    p exclusion_pair_test
         
     exclusionA_test ? @errorA = nil : @errorA = "Name '#{exclusionA}' is not on the member list"
     exclusionB_test ? @errorB = nil : @errorB = "Name '#{exclusionB}' is not on the member list"
+    if exclusionA_test && exclusionB_test
+      exclusion_pair_test ? @error_pair = "This pair is already excluded" : @error_pair = nil
+    end
       
-    if exclusionA_test && exclusionB_test && session[:exclusions]
+    if exclusionA_test && exclusionB_test && !exclusion_pair_test && session[:exclusions]
       exclusions << [exclusionA,exclusionB]
-    elsif exclusionA_test && exclusionB_test
+    elsif exclusionA_test && exclusionB_test && !session[:exclusions]
       session[:exclusions] = ExclusionList.new([[exclusionA,exclusionB]])
     end
   
