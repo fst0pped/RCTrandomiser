@@ -3,6 +3,7 @@ require 'csv'
 require 'slim'
 
 use Rack::Session::Pool
+set :public_folder, 'public'
 
 #-----------------------------------------------------------------------
 #Classes
