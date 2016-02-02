@@ -1,0 +1,54 @@
+Skip to content
+This repository  
+Search
+Pull requests
+Issues
+Gist
+ @fst0pped
+ Watch 1,437
+  Star 31,816
+  Fork 11,988 github/gitignore
+ Code  Pull requests 133  Pulse  Graphs
+Branch: master Find file Copy pathgitignore/Ruby.gitignore
+f5784d7  on 13 Dec 2015
+@jutaz jutaz Fix few typos
+11 contributors @arcresu @tiredpixel @weppos @pvande @rondevera @polamjag @peat @todd @defunkt @jutaz @amrnt
+RawBlameHistory    37 lines (31 sloc)  607 Bytes
+*.gem
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/spec/examples.txt
+/test/tmp/
+/test/version_tmp/
+/tmp/
+
+## Specific to RubyMotion:
+.dat*
+.repl_history
+build/
+
+## Documentation cache and generated files:
+/.yardoc/
+/_yardoc/
+/doc/
+/rdoc/
+
+## Environment normalization:
+/.bundle/
+/vendor/bundle
+/lib/bundler/man/
+
+# for a library or gem, you might want to ignore these files since the code is
+# intended to run in multiple environments; otherwise, check them in:
+# Gemfile.lock
+# .ruby-version
+# .ruby-gemset
+
+# unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
+.rvmrc
+Status API Training Shop Blog About Pricing
+© 2016 GitHub, Inc. Terms Privacy Security Contact Help

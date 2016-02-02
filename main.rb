@@ -3,7 +3,6 @@ require 'csv'
 require 'slim'
 
 use Rack::Session::Pool
-set :public_folder, 'public'
 
 #-----------------------------------------------------------------------
 #Classes
@@ -104,7 +103,7 @@ def checkforpair(list,pair)
       break
     end
   end
-  if pair_exists = true
+  if pair_exists == true
     return true
   else
     return false
